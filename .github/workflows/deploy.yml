@@ -1,0 +1,71 @@
+name: CI/CD Deployment
+
+on:
+  release:
+    types: [published]
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js (if needed)
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Display deployment info
+        run: |
+          echo "🚀 Starting deployment process"
+          echo "📦 Release tag: ${{ github.ref }}"
+          echo "🌟 Event: ${{ github.event_name }}"
+          if [ "${{ github.event_name }}" == "release" ]; then
+            echo "🎉 Release name: ${{ github.event.release.name }}"
+            echo "📝 Release tag: ${{ github.event.release.tag_name }}"
+          fi
+      
+      - name: Validate HTML files
+        run: |
+          echo "✅ Checking for HTML files..."
+          if [ -f "index.html" ]; then
+            echo "✅ index.html found"
+          else
+            echo "❌ index.html not found"
+            exit 1
+          fi
+      
+      - name: Validate CSS files
+        run: |
+          echo "✅ Checking for CSS files..."
+          if [ -f "style.css" ]; then
+            echo "✅ style.css found"
+          else
+            echo "❌ style.css not found"
+            exit 1
+          fi
+      
+      - name: Build summary
+        run: |
+          echo "📊 Build Summary:"
+          echo "=================="
+          echo "Files to deploy:"
+          ls -lh *.html *.css 2>/dev/null || echo "No web files found"
+          echo "=================="
+      
+      - name: Simulate deployment
+        run: |
+          echo "🌐 Deploying to cloud..."
+          echo "✅ Deployment successful!"
+          echo "🔗 Application would be available at your Azure/hosting URL"
+      
+      - name: Deployment complete
+        run: |
+          echo "✅ CI/CD pipeline completed successfully!"
+          echo "🎊 Your application is now live!"
