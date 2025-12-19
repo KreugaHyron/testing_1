@@ -16,11 +16,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       
-      - name: Setup Node.js (if needed)
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      
       - name: Display deployment info
         run: |
           echo "🚀 Starting deployment process"
@@ -56,7 +51,7 @@ jobs:
           echo "📊 Build Summary:"
           echo "=================="
           echo "Files to deploy:"
-          ls -lh *.html *.css 2>/dev/null || echo "No web files found"
+          find . -maxdepth 1 -type f \( -name "*.html" -o -name "*.css" \) -exec ls -lh {} \;
           echo "=================="
       
       - name: Simulate deployment
